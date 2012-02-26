@@ -411,7 +411,8 @@ class Affiliates_Registration {
 		update_user_option( $user_id, 'default_password_nag', true, true ); //Set up the Password change nag.
 	
 		// notify admin & new user
-		wp_new_user_notification( $user_id, $user_pass );
+//		wp_new_user_notification( $user_id, $user_pass );
+		self::new_affiliate_user_notification( $user_id, $user_pass );
 	
 		return $user_id;
 	}
@@ -540,7 +541,7 @@ class Affiliates_Registration {
 		$options = shortcode_atts( self::$defaults, $atts );
 		return self::render_form( $options );
 	}
-	
+
 	/**
 	 * Notify the blog admin of a new affiliate.
 	 *
@@ -561,6 +562,31 @@ class Affiliates_Registration {
 		$message .= sprintf(__( 'E-mail: %s' ), $user_email ) . "\r\n";
 	
 		@wp_mail( get_option( 'admin_email' ), sprintf( __( '[%s] New Affiliate Registration' ), $blogname ), $message );
+	}
+
+	/**
+	 * Notify the new affiliate of their registration details.
+	 *
+	 * @param int $user_id User ID
+	 */
+	static function new_affiliate_user_notification( $user_id, $user_pass ) {
+		$user = new WP_User( $user_id );
+	
+		$user_login = stripslashes( $user->user_login );
+		$user_email = stripslashes( $user->user_email );
+		$login_url = "http://www.unstoppableyouintensive.com/affiliates";
+	
+		// The blogname option is escaped with esc_html on the way into the database in sanitize_option
+		// we want to reverse this for the plain text arena of emails.
+		$blogname = wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
+	
+		$message = sprintf(__( 'Thank you for becoming an affiliate on %s!' ), $blogname ) . "\r\n\r\n";
+		$message .= "Here are your login details for your new affiliate registration.\r\n\r\n";
+		$message .= sprintf(__( 'Username: %s' ), $user_login ) . "\r\n";
+		$message .= sprintf(__( 'Password: %s' ), $user_pass ) . "\r\n\r\n";
+		$message .= sprintf(__( 'Login here: %s' ), $login_url ) . "\r\n";
+	
+		@wp_mail( $user_email, sprintf( __( '[%s] New Affiliate Registration' ), $blogname ), $message );
 	}
 }
 
