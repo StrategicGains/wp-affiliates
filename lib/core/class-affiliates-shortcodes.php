@@ -242,7 +242,8 @@ class Affiliates_Shortcodes {
 	}
 	
 	/**
-	 * Renders a login form that can redirect to a url or the current page.
+	 * Renders a login form that can redirect to a url or the current page
+	 * by setting the 'redirect_url' attribute.
 	 * 
 	 * @param array $atts
 	 * @param string $content
@@ -261,15 +262,20 @@ class Affiliates_Shortcodes {
 	}
 	
 	/**
-	 * Renders a link to log out.
+	 * Renders a link to log out.  If 'redirect_page' attribute is set, logout link
+	 * redirects to that page after logging out.
 	 * 
 	 * @param array $atts
 	 * @param string $content not used
 	 * @return string rendered logout link or empty if not logged in
 	 */
 	function affiliates_logout( $atts, $content = null ) {
+		extract( shortcode_atts( array( 'redirect_page' => '' ), $atts ) );
 		if ( is_user_logged_in() ) {
-			return '<a href="' . esc_url( wp_logout_url() ) .'">' . __( 'Log out' ) . '</a>';
+			if ( !empty( $redirect_page ) ) {
+				return '<a href="' . esc_url( wp_logout_url() ) . '&redirect_to=' . $redirect_page . '">' . __( 'Log out' ) . '</a>';
+			}
+			return '<a href="' . esc_url( wp_logout_url() ) . '">' . __( 'Log out' ) . '</a>';
 		} else {
 			return '';
 		}
