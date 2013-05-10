@@ -90,9 +90,6 @@ class Affiliates_Contact extends WP_Widget {
 		if ( !empty( $title ) ) {
 			echo $before_title . $title . $after_title;
 		}
-		
-		//echo "instance: " . var_export( $instance, true );
-		
 		if ( $this->is_singleton ) {
 			$ext = '';
 		} else {

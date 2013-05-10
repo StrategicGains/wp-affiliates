@@ -98,7 +98,7 @@ function affiliates_admin_affiliates_edit( $affiliate_id ) {
 		'</div>' .
 		'<div class="field">' .
 		wp_nonce_field( 'affiliates-edit', AFFILIATES_ADMIN_AFFILIATES_NONCE, true, false ) .
-		'<input type="submit" value="' . __( 'Save', AFFILIATES_PLUGIN_DOMAIN ) . '"/>' .
+		'<input class="button" type="submit" value="' . __( 'Save', AFFILIATES_PLUGIN_DOMAIN ) . '"/>' .
 		'<input type="hidden" value="edit" name="action"/>' .
 		'<a class="cancel" href="' . $current_url . '">' . __( 'Cancel', AFFILIATES_PLUGIN_DOMAIN ) . '</a>' .
 		'</div>' .
@@ -107,7 +107,7 @@ function affiliates_admin_affiliates_edit( $affiliate_id ) {
 		'</div>'; // .manage-affiliates
 	
 		echo $output;
-	
+
 	affiliates_footer();
 } // function affiliates_admin_affiliates_edit
 

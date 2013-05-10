@@ -42,11 +42,13 @@ function affiliates_admin_affiliates() {
 	$output = '';
 	$today = date( 'Y-m-d', time() );
 	
+	$pname = get_option( 'aff_pname', AFFILIATES_PNAME );
+	
 	if ( !current_user_can( AFFILIATES_ADMINISTER_AFFILIATES ) ) {
 		wp_die( __( 'Access denied.', AFFILIATES_PLUGIN_DOMAIN ) );
 	}
-				
-	if ( !$wp_rewrite->using_permalinks() ) {			
+	
+	if ( !$wp_rewrite->using_permalinks() ) {
 		$output .= '<p class="warning">' .
 			sprintf( __( 'Your site is not using pretty <a href="%s">permalinks</a>. You will only be able to use URL parameter based <span class="affiliate-link">affiliate links</span> but not pretty <span class="affiliate-permalink">affiliate permalinks</span>, unless you change your permalink settings.', AFFILIATES_PLUGIN_DOMAIN ), get_admin_url( null, 'options-permalink.php') ) .
 			'</p>';
@@ -111,9 +113,9 @@ function affiliates_admin_affiliates() {
 	
 	// filters
 	$from_date            = $affiliates_options->get_option( 'affiliates_from_date', null );
-	$from_datetime = null;
+	$from_datetime        = null;
 	$thru_date            = $affiliates_options->get_option( 'affiliates_thru_date', null );
-	$thru_datetime = null;
+	$thru_datetime        = null;
 	$affiliate_id         = $affiliates_options->get_option( 'affiliates_affiliate_id', null );
 	$affiliate_name       = $affiliates_options->get_option( 'affiliates_affiliate_name', null );
 	$affiliate_user_login = $affiliates_options->get_option( 'affiliates_affiliate_user_login', null );
@@ -139,12 +141,28 @@ function affiliates_admin_affiliates() {
 		$show_inoperative = false;
 	} else if ( isset( $_POST['submitted'] ) ) {
 		if ( !empty( $_POST['affiliate_name'] ) ) {
-			$affiliate_name = $_POST['affiliate_name'];
-			$affiliates_options->update_option( 'affiliates_affiliate_name', $affiliate_name );
+			$affiliate_name = trim( $_POST['affiliate_name'] );
+			if ( strlen( $affiliate_name ) > 0 ) {
+				$affiliates_options->update_option( 'affiliates_affiliate_name', $affiliate_name );
+			} else {
+				$affiliate_name = null;
+				$affiliates_options->delete_option( 'affiliates_affiliate_name' );
+			}
+		} else {
+			$affiliate_name = null;
+			$affiliates_options->delete_option( 'affiliates_affiliate_name' );
 		}
 		if ( !empty( $_POST['affiliate_user_login'] ) ) {
-			$affiliate_user_login = $_POST['affiliate_user_login'];
-			$affiliates_options->update_option( 'affiliates_affiliate_user_login', $affiliate_user_login );
+			$affiliate_user_login = trim( $_POST['affiliate_user_login'] );
+			if ( strlen( $affiliate_user_login ) > 0 ) {
+				$affiliates_options->update_option( 'affiliates_affiliate_user_login', $affiliate_user_login );
+			} else {
+				$affiliate_user_login = null;
+				$affiliates_options->delete_option( 'affiliates_affiliate_user_login' );
+			}
+		} else {
+			$affiliate_user_login = null;
+			$affiliates_options->delete_option( 'affiliates_affiliate_user_login' );
 		}
 		$show_deleted = isset( $_POST['show_deleted'] );
 		$affiliates_options->update_option( 'affiliates_show_deleted', $show_deleted );
@@ -155,12 +173,14 @@ function affiliates_admin_affiliates() {
 			$from_date = date( 'Y-m-d', strtotime( $_POST['from_date'] ) );
 			$affiliates_options->update_option( 'affiliates_from_date', $from_date );
 		} else {
+			$from_date = null;
 			$affiliates_options->delete_option( 'affiliates_from_date' );
 		}
 		if ( !empty( $_POST['thru_date'] ) ) {
 			$thru_date = date( 'Y-m-d', strtotime( $_POST['thru_date'] ) );
 			$affiliates_options->update_option( 'affiliates_thru_date', $thru_date );
 		} else {
+			$thru_date = null;
 			$affiliates_options->delete_option( 'affiliates_thru_date' );
 		}
 		if ( $from_date && $thru_date ) {
@@ -219,7 +239,7 @@ function affiliates_admin_affiliates() {
 				
 	$output .=
 		'<div class="manage">' .
-			"<a title='" . __( 'Click to add a new affiliate', AFFILIATES_PLUGIN_DOMAIN ) . "' class='add' href='" . esc_url( $current_url ) . "&action=add'><img class='icon' alt='" . __( 'Add', AFFILIATES_PLUGIN_DOMAIN) . "' src='". AFFILIATES_PLUGIN_URL ."images/add.png'/><span class='label'>" . __( 'New Affiliate', AFFILIATES_PLUGIN_DOMAIN) . "</span></a>" .
+			"<a title='" . __( 'Click to add a new affiliate', AFFILIATES_PLUGIN_DOMAIN ) . "' class='button add' href='" . esc_url( $current_url ) . "&action=add'><img class='icon' alt='" . __( 'Add', AFFILIATES_PLUGIN_DOMAIN) . "' src='". AFFILIATES_PLUGIN_URL ."images/add.png'/><span class='label'>" . __( 'New Affiliate', AFFILIATES_PLUGIN_DOMAIN) . "</span></a>" .
 		'</div>';
 
 	$row_count = isset( $_POST['row_count'] ) ? intval( $_POST['row_count'] ) : 0;
@@ -368,8 +388,8 @@ function affiliates_admin_affiliates() {
 				'</p>
 				<p>' .
 				wp_nonce_field( 'admin', AFFILIATES_ADMIN_AFFILIATES_FILTER_NONCE, true, false ) .
-				'<input type="submit" value="' . __( 'Apply', AFFILIATES_PLUGIN_DOMAIN ) . '"/>' .
-				'<input type="submit" name="clear_filters" value="' . __( 'Clear', AFFILIATES_PLUGIN_DOMAIN ) . '"/>' .
+				'<input class="button" type="submit" value="' . __( 'Apply', AFFILIATES_PLUGIN_DOMAIN ) . '"/>' .
+				'<input class="button" type="submit" name="clear_filters" value="' . __( 'Clear', AFFILIATES_PLUGIN_DOMAIN ) . '"/>' .
 				'<input type="hidden" value="submitted" name="submitted"/>' .
 				'</p>' .
 			'</form>' .
@@ -382,7 +402,7 @@ function affiliates_admin_affiliates() {
 					<label for="row_count">' . __('Results per page', AFFILIATES_PLUGIN_DOMAIN ) . '</label>' .
 					'<input name="row_count" type="text" size="2" value="' . esc_attr( $row_count ) .'" />
 					' . wp_nonce_field( 'admin', AFFILIATES_ADMIN_AFFILIATES_NONCE_1, true, false ) . '
-					<input type="submit" value="' . __( 'Apply', AFFILIATES_PLUGIN_DOMAIN ) . '"/>
+					<input class="button" type="submit" value="' . __( 'Apply', AFFILIATES_PLUGIN_DOMAIN ) . '"/>
 				</div>
 			</form>
 		</div>
@@ -487,15 +507,15 @@ function affiliates_admin_affiliates() {
 			$output .= 
 				__( 'Link', AFFILIATES_PLUGIN_DOMAIN ) .
 				': ' .
-				'<span class="affiliate-link">' . get_bloginfo('url') . '?affiliates=' . $encoded_id . '</span>' .
+				'<span class="affiliate-link">' . get_bloginfo('url') . '?' . $pname . '=' . $encoded_id . '</span>' .
 				' &nbsp; ' .
 				__( 'URL Parameter', AFFILIATES_PLUGIN_DOMAIN ) .
 				': ' .
-				 '<span class="affiliate-link-param">' . '?affiliates=' . $encoded_id . '</span>' .
+				 '<span class="affiliate-link-param">' . '?' . $pname . '=' . $encoded_id . '</span>' .
 				'<br/>' .
 				__( 'Pretty', AFFILIATES_PLUGIN_DOMAIN ) .
 				': ' .
-				'<span class="affiliate-permalink">' . get_bloginfo('url') . '/affiliates/' . $encoded_id . '</span>' .
+				'<span class="affiliate-permalink">' . get_bloginfo('url') . '/' . $pname . '/' . $encoded_id . '</span>' .
 				( $wp_rewrite->using_permalinks() ? '' :
 					'<span class="warning">' .
 					'&nbsp;' .

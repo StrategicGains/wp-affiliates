@@ -71,29 +71,27 @@ function affiliates_admin_hits() {
 		$expanded_hits = null;
 		$expanded_referrals = null;
 		$show_inoperative = null;
-	} else {
+	} else if ( isset( $_POST['submitted'] ) ) {
 		// filter by date(s)
 		if ( !empty( $_POST['from_date'] ) ) {
 			$from_date = date( 'Y-m-d', strtotime( $_POST['from_date'] ) );
 			$affiliates_options->update_option( 'hits_from_date', $from_date );
+		} else {
+			$from_date = null;
+			$affiliates_options->delete_option( 'hits_from_date' );
 		}
 		if ( !empty( $_POST['thru_date'] ) ) {
 			$thru_date = date( 'Y-m-d', strtotime( $_POST['thru_date'] ) );
 			$affiliates_options->update_option( 'hits_thru_date', $thru_date );
+		} else {
+			$thru_date = null;
+			$affiliates_options->delete_option( 'hits_thru_date' );
 		}
 		if ( $from_date && $thru_date ) {
 			if ( strtotime( $from_date ) > strtotime( $thru_date ) ) {
 				$thru_date = null;
 				$affiliates_options->delete_option( 'hits_thru_date' );
 			}
-		}
-		// We now have the desired dates from the user's point of view, i.e. in her timezone.
-		// If supported, adjust the dates for the site's timezone:
-		if ( $from_date ) {
-			$from_datetime = DateHelper::u2s( $from_date );
-		}
-		if ( $thru_date ) {
-			$thru_datetime = DateHelper::u2s( $thru_date, 24*3600 );
 		}
 
 		// filter by affiliate id
@@ -106,37 +104,35 @@ function affiliates_admin_hits() {
 			$affiliate_id = null;
 			$affiliates_options->delete_option( 'hits_affiliate_id' );	
 		}
-		
+
 		// expanded details?
-		if ( !empty( $_POST['submitted'] ) ) {
-			if ( !empty( $_POST['expanded'] ) ) {
-				$expanded = true;
-				$affiliates_options->update_option( 'hits_expanded', true );
-			} else {
-				$expanded = false;
-				$affiliates_options->delete_option( 'hits_expanded' );
-			}
-			if ( !empty( $_POST['expanded_hits'] ) ) {
-				$expanded_hits = true;
-				$affiliates_options->update_option( 'hits_expanded_hits', true );
-			} else {
-				$expanded_hits = false;
-				$affiliates_options->delete_option( 'hits_expanded_hits' );
-			}
-			if ( !empty( $_POST['expanded_referrals'] ) ) {
-				$expanded_referrals = true;
-				$affiliates_options->update_option( 'hits_expanded_referrals', true );
-			} else {
-				$expanded_referrals = false;
-				$affiliates_options->delete_option( 'hits_expanded_referrals' );
-			}
-			if ( !empty( $_POST['show_inoperative'] ) ) {
-				$show_inoperative = true;
-				$affiliates_options->update_option( 'hits_show_inoperative', true );
-			} else {
-				$show_inoperative = false;
-				$affiliates_options->delete_option( 'hits_show_inoperative' );
-			}
+		if ( !empty( $_POST['expanded'] ) ) {
+			$expanded = true;
+			$affiliates_options->update_option( 'hits_expanded', true );
+		} else {
+			$expanded = false;
+			$affiliates_options->delete_option( 'hits_expanded' );
+		}
+		if ( !empty( $_POST['expanded_hits'] ) ) {
+			$expanded_hits = true;
+			$affiliates_options->update_option( 'hits_expanded_hits', true );
+		} else {
+			$expanded_hits = false;
+			$affiliates_options->delete_option( 'hits_expanded_hits' );
+		}
+		if ( !empty( $_POST['expanded_referrals'] ) ) {
+			$expanded_referrals = true;
+			$affiliates_options->update_option( 'hits_expanded_referrals', true );
+		} else {
+			$expanded_referrals = false;
+			$affiliates_options->delete_option( 'hits_expanded_referrals' );
+		}
+		if ( !empty( $_POST['show_inoperative'] ) ) {
+			$show_inoperative = true;
+			$affiliates_options->update_option( 'hits_show_inoperative', true );
+		} else {
+			$show_inoperative = false;
+			$affiliates_options->delete_option( 'hits_show_inoperative' );
 		}
 	}
 	
@@ -217,6 +213,14 @@ function affiliates_admin_hits() {
 		$filters = '';			
 	}
 	$filter_params = array();
+	// We now have the desired dates from the user's point of view, i.e. in her timezone.
+	// If supported, adjust the dates for the site's timezone:
+	if ( $from_date ) {
+		$from_datetime = DateHelper::u2s( $from_date );
+	}
+	if ( $thru_date ) {
+		$thru_datetime = DateHelper::u2s( $thru_date, 24*3600 );
+	}
 	if ( $from_date && $thru_date ) {
 		$filters .= " datetime >= %s AND datetime < %s ";
 		$filter_params[] = $from_datetime;
@@ -272,19 +276,19 @@ function affiliates_admin_hits() {
 	// Referrals on dates without visits would give an infinite ratio (x referrals / 0 visits).
 	// We have a separate page which shows all referrals.
 	$query = $wpdb->prepare("
-		SELECT
-			*,
-			count(distinct ip) visits,
-			sum(count) hits,
-			(select count(*) from $referrals_table where date(datetime) = h.date ) referrals,
-			((select count(*) from $referrals_table where date(datetime) = h.date )/count(distinct ip)) ratio
-		FROM $hits_table h
-		$filters
-		GROUP BY date
-		ORDER BY $orderby $order
-		LIMIT $row_count OFFSET $offset
-		",
-		$filter_params
+			SELECT
+				*,
+				count(distinct ip) visits,
+				sum(count) hits,
+				(select count(*) from $referrals_table where date(datetime) = h.date ". ( $affiliate_id ? " AND affiliate_id = " . intval( $affiliate_id ) . " " : "" )  .") referrals,
+				((select count(*) from $referrals_table where date(datetime) = h.date ". ( $affiliate_id ? " AND affiliate_id = " . intval( $affiliate_id ) . " " : "" )  .")/count(distinct ip)) ratio
+			FROM $hits_table h
+	$filters
+			GROUP BY date
+			ORDER BY $orderby $order
+			LIMIT $row_count OFFSET $offset
+			",
+	$filter_params
 	);
 
 	$results = $wpdb->get_results( $query, OBJECT );		
@@ -331,7 +335,7 @@ function affiliates_admin_hits() {
 				'</p>
 				<p>' .
 				wp_nonce_field( 'admin', AFFILIATES_ADMIN_HITS_FILTER_NONCE, true, false ) .
-				'<input type="submit" value="' . __( 'Apply', AFFILIATES_PLUGIN_DOMAIN ) . '"/>' .
+				'<input class="button" type="submit" value="' . __( 'Apply', AFFILIATES_PLUGIN_DOMAIN ) . '"/>' .
 //				'<label class="expanded-filter" for="expanded">' . __( 'Expand details', AFFILIATES_PLUGIN_DOMAIN ) . '</label>' .
 //				'<input class="expanded-filter" name="expanded" type="checkbox" ' . ( $expanded ? 'checked="checked"' : '' ) . '/>' .
 				'<label class="expanded-filter" for="expanded_referrals">' . __( 'Expand referrals', AFFILIATES_PLUGIN_DOMAIN ) . '</label>' .
@@ -340,7 +344,7 @@ function affiliates_admin_hits() {
 				'<input class="expanded-filter" name="expanded_hits" type="checkbox" ' . ( $expanded_hits ? 'checked="checked"' : '' ) . '/>' .
 				'<label class="show-inoperative-filter" for="show_inoperative">' . __( 'Include inoperative affiliates', AFFILIATES_PLUGIN_DOMAIN ) . '</label>' .
 				'<input class="show-inoperative-filter" name="show_inoperative" type="checkbox" ' . ( $show_inoperative ? 'checked="checked"' : '' ) . '/>' .
-				'<input type="submit" name="clear_filters" value="' . __( 'Clear', AFFILIATES_PLUGIN_DOMAIN ) . '"/>' .
+				'<input class="button" type="submit" name="clear_filters" value="' . __( 'Clear', AFFILIATES_PLUGIN_DOMAIN ) . '"/>' .
 				'<input type="hidden" value="submitted" name="submitted"/>' .
 				'</p>' .
 			'</form>' .
@@ -354,7 +358,7 @@ function affiliates_admin_hits() {
 					//<input name="page" type="hidden" value="' . esc_attr( $page ) . '"/>
 					'<input name="row_count" type="text" size="2" value="' . esc_attr( $row_count ) .'" />
 					' . wp_nonce_field( 'admin', AFFILIATES_ADMIN_HITS_NONCE_1, true, false ) . '
-					<input type="submit" value="' . __( 'Apply', AFFILIATES_PLUGIN_DOMAIN ) . '"/>
+					<input class="button" type="submit" value="' . __( 'Apply', AFFILIATES_PLUGIN_DOMAIN ) . '"/>
 				</div>
 			</form>
 		</div>
@@ -422,7 +426,7 @@ function affiliates_admin_hits() {
 					$referrals_filters = " WHERE date(datetime) = %s ";
 					$referrals_filter_params = array( $result->date );
 					if ( $affiliate_id ) {
-						$referrals_filters .= " AND affiliate_id = %d ";
+						$referrals_filters .= " AND r.affiliate_id = %d ";
 						$referrals_filter_params[] = $affiliate_id;
 					}
 					$referrals_orderby = "datetime $order";

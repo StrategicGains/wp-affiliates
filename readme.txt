@@ -1,10 +1,11 @@
 === Affiliates ===
 Contributors: itthinx
 Donate link: http://www.itthinx.com/plugins/affiliates
-Tags: ads, advertising, affiliate, affiliate marketing, affiliate plugin, affiliate tool, affiliates, bucks, contact form, crm, earn money, e-commerce, lead, link, marketing, money, online sale, order, partner, referral, referral links, referrer, shopping cart, sales, site, track, transaction, wordpress
+Tags: ads, advertising, affiliate, affiliate marketing, affiliate plugin, affiliate tool, affiliates, bucks, contact form, crm, earn money, e-commerce, lead, link, marketing, money, online sale, order, partner, referral, referral links, referrer, shopping cart, sales, site, track, transaction, wordpress, contact form, contact form 7, digital downloads, easy digital downloads, eshop, jigowatt, jigoshop, paypal, s2Member, TheCartPress, woocommerce, woothemes, wp e-commerce, Ecwid
 Requires at least: 3.0
-Tested up to: 3.3.1
-Stable tag: 1.3.2
+Tested up to: 3.5
+Stable tag: 2.2.0
+License: GPLv3
 
 The Affiliates plugin provides the right tools to maintain an Affiliate Marketing Program.
 
@@ -25,6 +26,8 @@ If you need to manage an **Affiliate Marketing Progam**, **track visits to your 
 Simply put, the affiliates plugin is used to manage affiliates, create referrals and track visits to your site through affiliate links.
 Referrals are stored and attributed to an affiliate, for example if clients place orders on your site and you need to credit your affiliates. You can show your affiliates how well they perform, by embedding simple shortcodes on a page.
 
+[Follow itthinx on Twitter](http://twitter.com/itthinx) for updates on this and other plugins.
+
 **Free Integrations**
 
 These integrations are based on the Affiliates plugin and can be downloaded directly. To use Affiliates together with an e-commerce plugin, you need to install the Affiliates plugin, the e-commerce plugin of your choice and the integration plugin:
@@ -32,6 +35,28 @@ These integrations are based on the Affiliates plugin and can be downloaded dire
 - Integration with [eShop](http://wordpress.org/extend/plugins/eshop) : [Download](http://wordpress.org/extend/plugins/affiliates-eshop-light) | [Plugin page](http://www.itthinx.com/plugins/affiliates-eshop-light)
 - Integration with [Jigoshop](http://wordpress.org/extend/plugins/jigoshop) : [Download](http://wordpress.org/extend/plugins/affiliates-jigoshop-light) | [Plugin page](http://www.itthinx.com/plugins/affiliates-jigoshop-light)
 - Integration with [WooCommerce](http://wordpress.org/extend/plugins/woocommerce) : [Download](http://wordpress.org/extend/plugins/affiliates-woocommerce-light) | [Plugin page](http://www.itthinx.com/plugins/affiliates-woocommerce-light)
+
+**Extensions / Integrations with Affiliates Pro**
+
+Extended integrations are available:
+[for Contact Form 7](http://www.itthinx.com/plugins/affiliates-pro-contact-form-7),
+[for Easy Digital Downloads](http://www.itthinx.com/plugins/affiliates-pro-for-easy-digital-downloads/),
+[for Ecwid](http://www.itthinx.com/plugins/affiliates-ecwid),
+[for eShop](http://www.itthinx.com/plugins/affiliates-eshop),
+[for Jigoshop](http://www.itthinx.com/plugins/affiliates-jigoshop),
+[for PayPal](http://www.itthinx.com/plugins/affiliates-pro-paypal),
+[for s2Member](http://www.itthinx.com/plugins/affiliates-s2member),
+[for TheCartPress](http://www.itthinx.com/plugins/affiliates-thecartpress/),
+[for WooCommerce](http://www.itthinx.com/plugins/affiliates-woocommerce),
+[for WP e-Commerce](http://www.itthinx.com/plugins/affiliates-wp-e-commerce)
+ and [Affiliates Enterprise](http://www.itthinx.com/plugins/affiliates-enterprise)
+
+Other extensions:
+[Affiliates Products](http://www.itthinx.com/plugins/affiliates-products/) handles product commissions for product partners and affiliates on product sales,
+[Affiliates Users](http://www.itthinx.com/plugins/affiliates-users/) to automatically create affiliate accounts for new users,
+[Affiliates by Username](http://www.itthinx.com/plugins/affiliates-by-username/) allows affiliate links to indicate usernames in addition to the affiliate IDs.
+
+Development and consulting services are available [on request](http://www.itthinx.com/contact/).
 
 **Features**
 
@@ -54,9 +79,11 @@ These integrations are based on the Affiliates plugin and can be downloaded dire
 
     Affiliates can sign up automatically and can also be added manually with or without user accounts.
 
-* Awesome support
+* Documentation and Support
 
-    Just get in touch if you need help or have questions.
+    - Please refer to the [Documentation](http://www.itthinx.com/documentation/affiliates/) pages.
+    - [Videos](http://www.itthinx.com/plugins/affiliates-pro/videos/) : A collection of videos showing features available in the free Affiliates plugin and additional features available in Affiliates Pro.
+    - If you need help or want to ask a question, please leave a comment on the [Affiliates plugin page](http://www.itthinx.com/plugins/affiliates/).
 
 * Feedback is welcome
 
@@ -78,29 +105,12 @@ If you need help, have problems, want to leave feedback or want to provide const
 
 Please try to solve problems there before you rate this plugin or say it doesn't work. There goes a _lot_ of work into providing you with free quality plugins! Please appreciate that and help with your feedback. Thanks!
 
-[Follow me on Twitter](http://twitter.com/itthinx) for updates on this and other plugins.
 
-Readily deployable **Integration Packs** are available for contributors: Jigoshop, WP e-Commerce, Ecwid, eShop, s2Member, Wishlist Member, Contact Form 7, GetResponse, AWeber, ...
-
-Other integrations are developed and made available on request.
-
-Integration Packs include:
-
-* **Affiliate Statistics** shortcodes and widgets for affiliates
-* Configurable **Referral Views** for affiliates
-* Embeddable Links and Banners for affiliates
-* Premium support and special attention to feature requests for contributors
-
-If you require **consulting services**, **support** or **customization** including **referrals integration** with your site, you may [contact me here](http://www.itthinx.com/). Please consider making a [donation](http://www.itthinx.com/plugins/affiliates) or sponsoring the plugin as a contributor.
+### Menu ###
 
 After installing the plugin you can allow visitors to join your Affiliate Marketing Program. Enable registration, place the Affiliates Registration widget or shortcode on your site to let your new affiliates join. You can also start adding affiliates manually or let existing users join the Affiliate Program.
-The default options should be suitable for many, but there are some options you might want to consider before you really start.
 
-Full documentation is accessible on the [Affiliates plugin page](http://www.itthinx.com/plugins/affiliates) and [Affiliates Documentation](http://www.itthinx.com/documentation/affiliates).
-
-[Videos](http://www.itthinx.com/plugins/affiliates-pro/videos/) : A collection of videos showing features available in the free Affiliates plugin and additional features available in Affiliates Pro and Enterprise.
-
-Although the options are documented on each page and are generally intuitive or self-explaining, a quick introduction is useful ...
+The default options should be suitable for many, but there are some options you might want to consider before you really start. Although the options are documented on each page and are generally intuitive or self-explaining, a quick introduction is useful ...
 
 The 'Affiliates' menu provides these sections:
 
@@ -193,7 +203,23 @@ This option is useful if you just need to start clean while you run tests.
 
 It is not intended to keep track of links to other sites that you as a member of an affiliate program may have.
 
+### Translations ###
+
+Many thanks to those who have contributed translations:
+
+* Hebrew translation provided by Yair from [temoni.org](http://www.temoni.org/)
+* Italian translation provided by Alessandro Bergamin from [VoglioClienti.it](http://www.voglioclienti.it/)
+* Indonesian translation provided by Ganis Irawan from [Bisnis Internet 101](http://www.bisnisin.com/)
+* Lithuanian translation provided by Vincent G from [Host1Free](http://www.host1free.com/)
+* Portuguese translation provided by Carlos Gouveia from [iNovve](http://www.inovve.com/)
+* Slovak translation provided by Cr3o from [životné poistenie](http://www.zivotnepoistenie24.sk/)
+* Spanish translation provided by David Perez from [Closemarketing](http://www.closemarketing.es/)
+
+If you want to add a translation, please [get in touch](http://www.itthinx.com/contact/).
+
 == Installation ==
+
+More detailed instructions are available on the [Setup](http://www.itthinx.com/documentation/affiliates/setup/) documentation page.
 
 1. Upload or extract the `affiliates` folder to your site's `/wp-content/plugins/` directory. Or you could use the *Add new* option found in the *Plugins* menu in WordPress.  
 2. Enable the plugin from the *Plugins* menu in WordPress.
@@ -202,6 +228,7 @@ It is not intended to keep track of links to other sites that you as a member of
 5. Now you can let your affiliates sign up directly from the Affiliate Area or start adding affiliates manually and provide them with affiliate links to your site.
 
 The default options should be suitable for many, but there are some options you might want to consider before you really start. Please read the [Affiliates Documentation](http://www.itthinx.com/documentation/affiliates/) for additional information.
+
 
 == Frequently Asked Questions ==
 
@@ -234,7 +261,13 @@ Remember to use HTML entities for < and >.
 
 = How can I show affiliates information about their performance? =
 
+Detailed information on this is available on the [Affiliates Documentation](http://www.itthinx.com/documentation/affiliates/) pages.
+
 Note: You can create a page and embed a shortcode manually, or you can go to _Affiliates > Options_ and **press the _Generate_ button which will create the default Affiliate Area**.
+
+The number of hits on an affiliate's link can be shown with the [affiliates_hits] shortcode.
+
+The number of visits on an affiliate's link can be shown with the [affiliates_visits] shortcode.
 
 Your affiliates will want to know how much they will and have earned and how many referrals they have made.
 
@@ -342,6 +375,14 @@ Yes.
 
 The plugin provides role-based permissions to access gathered affiliate data, administer affiliates and administer options.
 
+= Can I change the content of the email that new affiliates receive? =
+
+See [Useful Plugins](http://www.itthinx.com/useful-plugins/).
+
+= After login or logout, I want to redirect users to another page instead of the WordPress login. How can I do that? =
+
+See [Useful Plugins](http://www.itthinx.com/useful-plugins/).
+
 == Screenshots ==
 
 See [Affiliates Screenshots](http://www.itthinx.com/plugins/affiliates/affiliates-screenshots/)
@@ -359,9 +400,100 @@ See [Affiliates Screenshots](http://www.itthinx.com/plugins/affiliates/affiliate
 11. Affiliates Registration Widget - Lets visitors sign up to your affiliate program, fully automated. Also available as a shortcode to embed on pages.
 12. Affiliates Registration Widget - Visitor's view of the form. Also available as a shortcode to embed on pages.
 13. Affiliates Registration Widget - View of a visitor's successful form submission to join the site's affiliate program.
-14. Generated Affiliate Area page - This is what an affiliate sees on the page when logged in.
+14. Generated Affiliate Area page - This is the generated affiliate area that an affiliate sees on the page when logged in.
 
 == Changelog ==
+
+= 2.2.0 =
+* added [referrer_user] shortcode
+* added Italian translation
+* added features to manually add, edit and remove referrals
+* added option to search in referral descriptions too
+* fixed sticky filter application in referral screens (Visits & Referrals, Affiliates & Referrals, Referrals)
+
+= 2.1.9 =
+* added Indonesian translation
+* WP 3.5 compatible
+* fixed bug deleting search filter on referrals admin screen
+
+= 2.1.8 =
+* added Spanish translation
+* improved referrals view
+* fixed wrong type of hook used for parse_request (was filter)
+
+= 2.1.7 =
+* added additional data to affiliates_referral hook
+
+= 2.1.6 =
+* fixed character encoding issue for affiliate link when rendering code
+* added filter to service
+* added affiliates_record_referral filter
+* added affiliates_add_referral function
+* added affiliates_get_user_affiliate function 
+
+= 2.1.5 =
+* Added Javascript redirect for registraton form when headers were already sent and the redirect / redirect_to attributes are specified
+* Fixed rewrite rule handling
+
+= 2.1.4 =
+* Improved usability of click-toggles on admin screens
+* GUI appearance improvements
+* Reduced footnote
+* Added affiliates_referral action
+* Added Portuguese translation.
+
+= 2.1.3 =
+* Added Slovak translation.
+
+= 2.1.2 =
+* Dropped use of visualize for stats graphs, using flot instead.
+
+= 2.1.1 =
+* Added shortcode to render the referrer's id.
+
+= 2.1.0 =
+* Added Lithuanian translation.
+* Added Hebrew translation.
+
+= 2.0.1 =
+* WordPress 3.4 compatibility checked
+* fixed MD5-encoded affiliate links
+
+= 2.0.0 =
+* Made affiliate registration independent of user registration based on general settings
+* Adjusted for usage on multisite subsites
+* Added network management options
+* Fixed default update flow for new installation
+
+= 1.3.9 =
+* added [affiliates_id] shortcode that prints the affiliate's id
+
+= 1.3.8.1 =
+* using alternative method to record IP on hits and referrals on system with PHP_INT_SIZE < 8
+
+= 1.3.8 =
+* fixed affiliate registration bug
+* added filter to search in referral data
+
+= 1.3.7 =
+* added [affiliates_hits] and [affiliates_visits] shortcodes
+* fixed bug when affiliate is selected on Visits & Referrals screen when affiliate is given in filters
+* fixed bug in Affiliates & Referrals screen when date and affiliate is given in filters
+
+= 1.3.6 =
+* added the option to change the default Affiliates URL parameter name from 'affiliates' to something else
+* added Affiliates URL parameter name option to options page
+* loading admin area scripts only when in admin
+* fixed options page behavior: when pressing return in a field, a new page was generated 
+
+= 1.3.5 =
+* Fixed too restrictive date filters in charts.
+
+= 1.3.4 =
+* Added date filter section to charts to provide a more flexible means of displaying charts for desired date ranges.
+
+= 1.3.3 =
+* Fixed empty filter fields are now handled correctly.
 
 = 1.3.2 =
 * 14 Day Charts added in overview showing referrals, visits and hits for the last 14 days.
@@ -414,6 +546,69 @@ See [Affiliates Screenshots](http://www.itthinx.com/plugins/affiliates/affiliate
 * Initial release (tested & working on production sites).
 
 == Upgrade Notice ==
+
+= 2.2.0 =
+* New features and Italian translation added.
+
+= 2.1.9 =
+* WordPress 3.5 compatible, fixes and Indonesian translation added.
+
+= 2.1.8 =
+* Several improvements and added Spanish translation.
+
+= 2.1.7 =
+* Several fixes and additions (see changelog)
+
+= 2.1.5
+* Important performance improvement related to rewrite rule handling
+* Redirect improvement for registraton form
+
+= 2.1.4 =
+* GUI and other improvements including better click-toggle, buttons, referral action, ...
+* Added Portuguese translation.
+
+= 2.1.3 =
+* Added Slovak translation.
+
+= 2.1.2 =
+* Upgrade to get much improved stats graphics on the Affiliates Overview. Also adds the option to show stats for a given amount of days back.
+
+= 2.1.1 =
+* New shortcode to render the referrer's id.
+
+= 2.1.0 =
+* Added Lithuanian and Hebrew translations.
+
+= 2.0.1 =
+* WordPress 3.4 compatibility & fixes
+
+= 2.0.0 =
+* Affiliate registration is now independent of the general user registration (affiliates can be allowed to register although not 'Anyone can register') 
+* Multisite support
+
+= 1.3.9 =
+* New shortcode: [affiliates_id] prints the current affiliate's ID when that affiliate is logged in.
+
+= 1.3.8 =
+* fixed affiliate registration bug
+* added filter to search in referral data
+
+= 1.3.7 =
+* added [affiliates_hits] and [affiliates_visits] shortcodes
+* fixed bugs in admin screens for some filter settings
+
+= 1.3.6 =
+* Added the possibility to change the affiliate URL parameter name: new setting in Affiliates > Options.
+* Several improvements and minor fixes. 
+
+= 1.3.5 =
+* Charts in overview allow to display data for a selected date range, for example show charts for the current month instead of just the last 14 days.
+
+= 1.3.4 =
+* Added date filter section to charts to provide a more flexible means of displaying charts for desired date ranges.
+
+= 1.3.3 =
+* Improved filter form handling.
 
 = 1.3.2 =
 * 14 Day Charts added in overview showing referrals, visits and hits for the last 14 days.

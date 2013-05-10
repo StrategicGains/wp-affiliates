@@ -74,7 +74,7 @@ function affiliates_admin_affiliates_add() {
 		'</div>' .
 		'<div class="field">' .
 		wp_nonce_field( 'affiliates-add', AFFILIATES_ADMIN_AFFILIATES_NONCE, true, false ) .
-		'<input type="submit" value="' . __( 'Add', AFFILIATES_PLUGIN_DOMAIN ) . '"/>' .
+		'<input class="button" type="submit" value="' . __( 'Add', AFFILIATES_PLUGIN_DOMAIN ) . '"/>' .
 		'<input type="hidden" value="add" name="action"/>' .
 		'<a class="cancel" href="' . $current_url . '">' . __( 'Cancel', AFFILIATES_PLUGIN_DOMAIN ) . '</a>' .
 		'</div>' .
@@ -164,7 +164,7 @@ function affiliates_admin_affiliates_add_submit() {
 			}
 		}
 		if ( $wpdb->insert( $affiliates_table, $data_, $formats_ ) ) {
-			$affiliate_id = $wpdb->get_var( $wpdb->prepare( "SELECT LAST_INSERT_ID()" ) );
+			$affiliate_id = $wpdb->get_var( "SELECT LAST_INSERT_ID()" );
 		}
 			
 		// user association

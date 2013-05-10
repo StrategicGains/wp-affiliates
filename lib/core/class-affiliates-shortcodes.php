@@ -22,15 +22,122 @@ class Affiliates_Shortcodes {
 	
 	// var $url_options = array();
 	
+	/**
+	 * Add shortcodes.
+	 */
 	public static function init() {
+		add_shortcode( 'affiliates_id', array( __CLASS__, 'affiliates_id' ) );
+		add_shortcode( 'referrer_id', array( __CLASS__, 'referrer_id' ) );
+		add_shortcode( 'referrer_user', array( __CLASS__, 'referrer_user' ) );
 		add_shortcode( 'affiliates_is_affiliate', array( __CLASS__, 'affiliates_is_affiliate' ) );
 		add_shortcode( 'affiliates_is_not_affiliate', array( __CLASS__, 'affiliates_is_not_affiliate' ) );
+		add_shortcode( 'affiliates_hits', array( __CLASS__, 'affiliates_hits' ) );
+		add_shortcode( 'affiliates_visits', array( __CLASS__, 'affiliates_visits' ) );
 		add_shortcode( 'affiliates_referrals', array( __CLASS__, 'affiliates_referrals' ) );
 		add_shortcode( 'affiliates_url', array( __CLASS__, 'affiliates_url' ) );
 		add_shortcode( 'affiliates_login_redirect', array( __CLASS__, 'affiliates_login_redirect' ) );
 		add_shortcode( 'affiliates_logout', array( __CLASS__, 'affiliates_logout' ) );
 	}
-	
+
+	/**
+	 * Affiliate ID shortcode.
+	 * Renders the affiliate's id.
+	 *
+	 * @param array $atts attributes
+	 * @param string $content not used
+	 */
+	public static function affiliates_id( $atts, $content = null ) {
+		global $wpdb;
+		$output = "";
+		$user_id = get_current_user_id();
+		if ( $user_id && affiliates_user_is_affiliate( $user_id ) ) {
+			$affiliates_table = _affiliates_get_tablename( 'affiliates' );
+			$affiliates_users_table = _affiliates_get_tablename( 'affiliates_users' );
+			if ( $affiliate_id = $wpdb->get_var( $wpdb->prepare(
+				"SELECT $affiliates_users_table.affiliate_id FROM $affiliates_users_table LEFT JOIN $affiliates_table ON $affiliates_users_table.affiliate_id = $affiliates_table.affiliate_id WHERE $affiliates_users_table.user_id = %d AND $affiliates_table.status = 'active'",
+				intval( $user_id )
+			))) {
+				$output .= affiliates_encode_affiliate_id( $affiliate_id );
+			}
+		}
+		return $output;
+	}
+
+	/**
+	 * Referrer ID shortcode.
+	 * Renders the referring affiliate's id.
+	 *
+	 * @param array $atts attributes
+	 * @param string $content not used
+	 */
+	public static function referrer_id( $atts, $content = null ) {
+		$options = shortcode_atts(
+			array(
+				'direct'  => false
+			),
+			$atts
+		);
+		extract( $options );
+		$output = "";
+		require_once( 'class-affiliates-service.php' );
+		$affiliate_id = Affiliates_Service::get_referrer_id();
+		if ( $affiliate_id ) {
+			if ( $direct || $affiliate_id !== affiliates_get_direct_id() ) {
+				$output .= affiliates_encode_affiliate_id( $affiliate_id );
+			}
+		}
+		return $output;
+	}
+
+	/**
+	 * Renders the referrer's username.
+	 * @param array $atts
+	 * @param string $content not used
+	 * @return string
+	 */
+	public static function referrer_user( $atts, $content = null ) {
+		$options = shortcode_atts(
+			array(
+				'direct'  => false,
+				'display' => 'user_login'
+			),
+			$atts
+		);
+		extract( $options );
+		$output = '';
+		require_once( 'class-affiliates-service.php' );
+		$affiliate_id = Affiliates_Service::get_referrer_id();
+		if ( $affiliate_id ) {
+			if ( $direct || $affiliate_id !== affiliates_get_direct_id() ) {
+				if ( $user_id = affiliates_get_affiliate_user( $affiliate_id ) ) {
+					if ( $user = get_user_by( 'id', $user_id ) ) {
+						switch( $display ) {
+							case 'user_login' :
+								$output .= $user->user_login;
+								break;
+							case 'user_nicename' :
+								$output .= $user->user_nicename;
+								break;
+							case 'user_email' :
+								$output .= $user->user_email;
+								break;
+							case 'user_url' :
+								$output .= $user->user_url;
+								break;
+							case 'display_name' :
+								$output .= $user->display_name;
+								break;
+							default :
+								$output .= $user->user_login;
+						}
+						$output = wp_strip_all_tags( $output );
+					}
+				}
+			}
+		}
+		return $output;
+	}
+
 	/**
 	 * Affiliate content shortcode.
 	 * Renders the content if the current user is an affiliate.
@@ -71,6 +178,131 @@ class Affiliates_Shortcodes {
 	}
 	
 	/**
+	 * Adjust from und until dates from UTZ to STZ and take into account the
+	 * for option which will adjust the from date to that of the current
+	 * day, the start of the week or the month, leaving the until date
+	 * set to null.
+	 * 
+	 * @param string $for "day", "week" or "month"
+	 * @param string $from date/datetime
+	 * @param string $until date/datetime
+	 */
+	private static function for_from_until( $for, &$from, &$until ) {
+		include_once( AFFILIATES_CORE_LIB . '/class-affiliates-date-helper.php');
+		if ( $for === null ) {
+			if ( $from !== null ) {
+				$from = date( 'Y-m-d H:i:s', strtotime( DateHelper::u2s( $from ) ) );
+			}
+			if ( $until !== null ) {
+				$until = date( 'Y-m-d H:i:s', strtotime( DateHelper::u2s( $until ) ) );
+			}
+		} else {
+			$user_now                      = strtotime( DateHelper::s2u( date( 'Y-m-d H:i:s', time() ) ) );
+			$user_now_datetime             = date( 'Y-m-d H:i:s', $user_now );
+			$user_daystart_datetime        = date( 'Y-m-d', $user_now ) . ' 00:00:00';
+			$server_now_datetime           = DateHelper::u2s( $user_now_datetime );
+			$server_user_daystart_datetime = DateHelper::u2s( $user_daystart_datetime );
+			$until = null;
+			switch ( strtolower( $for ) ) {
+				case 'day' :
+					$from = date( 'Y-m-d H:i:s', strtotime( $server_user_daystart_datetime ) );
+					break;
+				case 'week' :
+					$fdow = intval( get_option( 'start_of_week' ) );
+					$dow  = intval( date( 'w', strtotime( $server_user_daystart_datetime ) ) );
+					$d    = $dow - $fdow;
+					$from = date( 'Y-m-d H:i:s', mktime( 0, 0, 0, date( 'm', strtotime( $server_user_daystart_datetime ) )  , date( 'd', strtotime( $server_user_daystart_datetime ) )- $d, date( 'Y', strtotime( $server_user_daystart_datetime ) ) ) );
+					break;
+				case 'month' :
+					$from = date( 'Y-m', strtotime( $server_user_daystart_datetime ) ) . '-01 00:00:00';
+					break;
+				default :
+					$from = null;
+			}
+		}
+	}
+	
+	/**
+	 * Hits shortcode - renders the number of hits.
+	 * 
+	 * @param array $atts attributes
+	 * @param string $content not used
+	 */
+	public static function affiliates_hits( $atts, $content = null ) {
+		global $wpdb;
+		
+		include_once( AFFILIATES_CORE_LIB . '/class-affiliates-date-helper.php');
+		
+		remove_shortcode( 'affiliates_hits' );
+		$content = do_shortcode( $content );
+		add_shortcode( 'affiliates_hits', array( __CLASS__, 'affiliates_hits' ) );
+		
+		$output = "";
+		
+		$options = shortcode_atts(
+			array(
+				'from'  => null,
+				'until' => null,
+				'for'   => null
+			),
+			$atts
+		);
+		extract( $options );
+		self::for_from_until( $for, $from, $until );
+		$user_id = get_current_user_id();
+		if ( $user_id && affiliates_user_is_affiliate( $user_id ) ) {
+			$affiliates_table = _affiliates_get_tablename( 'affiliates' );
+			$affiliates_users_table = _affiliates_get_tablename( 'affiliates_users' );
+			if ( $affiliate_id = $wpdb->get_var( $wpdb->prepare(
+				"SELECT $affiliates_users_table.affiliate_id FROM $affiliates_users_table LEFT JOIN $affiliates_table ON $affiliates_users_table.affiliate_id = $affiliates_table.affiliate_id WHERE $affiliates_users_table.user_id = %d AND $affiliates_table.status = 'active'",
+				intval( $user_id )
+			))) {
+				$output .= affiliates_get_affiliate_hits( $affiliate_id, $from, $until, true );
+			}
+		}
+		return $output;
+	}
+
+	/**
+	 * Visits shortcode - renders the number of visits.
+	 *
+	 * @param array $atts attributes
+	 * @param string $content not used
+	 */	
+	public static function affiliates_visits( $atts, $content = null ) {
+		
+		global $wpdb;
+		
+		remove_shortcode( 'affiliates_visits' );
+		$content = do_shortcode( $content );
+		add_shortcode( 'affiliates_visits', array( __CLASS__, 'affiliates_visits' ) );
+		
+		$output = "";
+		$options = shortcode_atts(
+			array(
+				'from'  => null,
+				'until' => null,
+				'for'   => null
+			),
+			$atts
+		);
+		extract( $options );
+		self::for_from_until( $for, $from, $until );
+		$user_id = get_current_user_id();
+		if ( $user_id && affiliates_user_is_affiliate( $user_id ) ) {
+			$affiliates_table = _affiliates_get_tablename( 'affiliates' );
+			$affiliates_users_table = _affiliates_get_tablename( 'affiliates_users' );
+			if ( $affiliate_id = $wpdb->get_var( $wpdb->prepare(
+				"SELECT $affiliates_users_table.affiliate_id FROM $affiliates_users_table LEFT JOIN $affiliates_table ON $affiliates_users_table.affiliate_id = $affiliates_table.affiliate_id WHERE $affiliates_users_table.user_id = %d AND $affiliates_table.status = 'active'",
+				intval( $user_id )
+			) ) ) {
+				$output .= affiliates_get_affiliate_visits( $affiliate_id, $from, $until, true );
+			}
+		}
+		return $output;
+	}
+	
+	/**
 	 * Referrals shortcode - renders referral information.
 	 *
 	 * @param array $atts attributes
@@ -90,17 +322,13 @@ class Affiliates_Shortcodes {
 				'from'     => null,
 				'until'    => null,
 				'show'     => 'count',
-				'currency' => null
+				'currency' => null,
+				'for'      => null
 			),
 			$atts
 		);
 		extract( $options );
-		if ( $from !== null ) {
-			$from = date( 'Y-m-d', strtotime( $from ) );
-		}
-		if ( $until !== null ) {
-			$until = date( 'Y-m-d', strtotime( $until ) );
-		}
+		self::for_from_until( $for, $from, $until );
 		$user_id = get_current_user_id();
 		if ( $user_id && affiliates_user_is_affiliate( $user_id ) ) {
 			$affiliates_table = _affiliates_get_tablename( 'affiliates' );
@@ -211,6 +439,8 @@ class Affiliates_Shortcodes {
 	public static function affiliates_url( $atts, $content = null ) {
 		global $wpdb;
 		
+		$pname = get_option( 'aff_pname', AFFILIATES_PNAME );
+		
 		remove_shortcode( 'affiliates_url' );
 		$content = do_shortcode( $content );
 		add_shortcode( 'affiliates_url', array( __CLASS__, 'affiliates_url' ) );
@@ -235,7 +465,7 @@ class Affiliates_Shortcodes {
 				if ( !empty( $url_query ) ) {
 					$separator = '&';
 				}
-				$output .= $base_url . $separator . 'affiliates=' . $encoded_affiliate_id;
+				$output .= $base_url . $separator . $pname . '=' . $encoded_affiliate_id;
 			}
 		}
 		return $output;

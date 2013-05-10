@@ -120,7 +120,8 @@ div.details-hits {
 .referrals-overview .page-options {
 	float: left;
 	display: inline;
-	width: 250px;
+	min-width: 250px;
+	margin-bottom: 2px;
 }
 .affiliates-overview .tablenav.top,
 .hits-overview .tablenav.top,
@@ -141,10 +142,14 @@ div.details-hits {
 }
 
 .referrals-overview .odd {
-  background-color: #f9f9f9;
+  background-color: #fcfcfc;
 }
 .referrals-overview .even {
   background-color: #f3f3f3;
+}
+.referrals-overview .even .widefat,
+.referrals-overview .odd .widefat {
+	background-color: inherit;
 }
 
 .referrals-overview .view-toggle .expander,
@@ -159,11 +164,11 @@ div.details-hits {
 	width: 15%;
 }
 .referrals-overview table.referrals th.post_title {
-  width: 35%;
+  width: 30%;
 }
 
 .referrals-overview table.referrals th.name {
-  width: 15%;
+  width: 10%;
 }
 
 .referrals-overview table.referral-data td.referral-data-title {
@@ -222,10 +227,16 @@ div.details-hits {
 .affiliate-name-filter,
 .affiliate-user-login-filter,
 .from-date-filter,
-.thru-date-filter {
+.thru-date-filter,
+.days-back-filter {
 	margin-right: 1em;
 }
 .thru-date-filter {
+}
+
+input.days-back-filter {
+	width: 5em;
+	text-align: right;
 }
 
 input[name="clear_filters"] {
@@ -318,4 +329,17 @@ table.affiliates-permissions tbody tr td.checkbox {
 }
 .referrals-overview td.amount {
 	text-align: right;
+}
+.referrals-overview td.edit,
+.referrals-overview td.remove {
+	vertical-align: middle;
+}
+.manage.referral {
+	margin: 3em 1em 0 0;
+}
+div.referral span.title {
+	display: block;
+}
+div.referral.remove span.title {
+	font-weight: bold;
 }

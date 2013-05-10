@@ -123,7 +123,8 @@ class Affiliates_Registration {
 			return $output;
 		}
 		
-		if ( !get_option( 'users_can_register', false ) ) {
+		
+		if ( !get_option( 'aff_registration', get_option( 'users_can_register', false ) ) ) {
 			$output .= '<p>' . __( 'Registration is currently closed.', AFFILIATES_PLUGIN_DOMAIN ) . '</p>';
 			return $output;
 		}
@@ -205,35 +206,47 @@ class Affiliates_Registration {
 					'user_url'   => $url
 				); 
 				
-				if ( !$is_logged_in ) {
-					$affiliate_user_id = self::register_affiliate( $userdata );
-				} else {
-					$affiliate_user_id = $user->ID;
+				// don't try to create a new user on multiple renderings
+				global $affiliate_user_id, $new_affiliate_registered;
+				if ( !isset( $affiliate_user_id ) ) {
+					if ( !$is_logged_in ) {
+						// allow plugins to be aware of new user account being created
+						do_action( 'affiliates_before_register_affiliate', $userdata );
+						// create the affiliate user account
+						$affiliate_user_id = self::register_affiliate( $userdata );
+						$new_affiliate_registered = true;
+						do_action( 'affiliates_after_register_affiliate', $userdata );
+					} else {
+						$affiliate_user_id = $user->ID;
+						$new_affiliate_registered = true;
+					}
 				}
 					
 				// register as affiliate
 				if ( !is_wp_error( $affiliate_user_id ) ) {
 					// add affiliate entry
 					$send = true;
-					
-					$affiliate_id = self::store_affiliate( $affiliate_user_id, $userdata );
-					
-					do_action( 'affiliates_stored_affiliate', $affiliate_id, $affiliate_user_id );
-					
-					$is_widget = isset( $options['is_widget'] ) && ( $options['is_widget'] === true || $options['is_widget'] == 'true' );
-					$redirect = isset( $options['redirect'] ) && ( $options['redirect'] === true || $options['redirect'] == 'true' );
+					if ( $new_affiliate_registered ) {
+						$affiliate_id = self::store_affiliate( $affiliate_user_id, $userdata );
+						do_action( 'affiliates_stored_affiliate', $affiliate_id, $affiliate_user_id );
+					}
+
+					$is_widget    = isset( $options['is_widget'] ) && ( $options['is_widget'] === true || $options['is_widget'] == 'true' );
+					$redirect     = isset( $options['redirect'] ) && ( $options['redirect'] === true || $options['redirect'] == 'true' );
+					$redirect_url = empty( $_REQUEST['redirect_to'] ) ? get_home_url( get_current_blog_id(), 'wp-login.php?checkemail=confirm' ) : $_REQUEST['redirect_to'];
+
 					if ( $redirect && !$is_widget && !headers_sent() ) {
-						if ( empty( $_REQUEST['redirect_to'] ) ) {
-							wp_safe_redirect( get_home_url( get_current_blog_id(), 'wp-login.php?checkemail=confirm' ) );
-						} else {
-							wp_safe_redirect( $_REQUEST['redirect_to'] );
-						}
+						wp_safe_redirect( $redirect_url );
 						exit();
 					} else {
 						$output .= '<p>' . __( 'Thanks for signing up!', AFFILIATES_PLUGIN_DOMAIN ) . '</p>';
 						if ( !$is_logged_in ) {
 							$output .= '<p>' . __( 'Please check your email for the confirmation link.', AFFILIATES_PLUGIN_DOMAIN ) . '</p>';
-							$output .= '<p>' . sprintf( __( 'Log in <a href="%s">here</a>.', AFFILIATES_PLUGIN_DOMAIN ), get_home_url( get_current_blog_id(), 'wp-login.php?checkemail=confirm' ) ) . '</p>';
+							if ( $redirect && !$is_widget ) {
+								$output .= '<script type="text/javascript">window.location="' . esc_url( $redirect_url ) . '";</script>';
+							} else {
+								$output .= '<p>' . sprintf( __( 'Log in <a href="%s">here</a>.', AFFILIATES_PLUGIN_DOMAIN ), get_home_url( get_current_blog_id(), 'wp-login.php?checkemail=confirm' ) ) . '</p>';
+							}
 						} else {
 							if ( isset( $options['registered_profile_link_url'] ) ) {
 								$output .= '<p>';
@@ -399,7 +412,7 @@ class Affiliates_Registration {
 		$userdata['password']   = $user_pass;
 		$userdata['user_url']   = esc_url_raw( $userdata['user_url'] );
 		$userdata['user_url']   = preg_match( '/^(https?|ftps?|mailto|news|irc|gopher|nntp|feed|telnet):/is', $userdata['user_url'] ) ? $userdata['user_url'] : 'http://' . $userdata['user_url'];
-		
+
 		// create affiliate entry
 		$user_id = self::create_affiliate( $userdata );
 		
@@ -459,7 +472,7 @@ class Affiliates_Registration {
 		);
 		$formats = array( '%s', '%s', '%s' );
 		if ( $wpdb->insert( $affiliates_table, $data, $formats ) ) {			
-			$affiliate_id = $wpdb->get_var( $wpdb->prepare( "SELECT LAST_INSERT_ID()" ) );
+			$affiliate_id = $wpdb->get_var( "SELECT LAST_INSERT_ID()" );
 			// create association
 			if ( $wpdb->insert(
 				_affiliates_get_tablename( 'affiliates_users' ),
@@ -561,7 +574,9 @@ class Affiliates_Registration {
 		$message .= sprintf(__( 'Username: %s' ), $user_login ) . "\r\n\r\n";
 		$message .= sprintf(__( 'E-mail: %s' ), $user_email ) . "\r\n";
 	
-		@wp_mail( get_option( 'admin_email' ), sprintf( __( '[%s] New Affiliate Registration' ), $blogname ), $message );
+		if ( get_option( 'aff_notify_admin', true ) ) {
+			@wp_mail( get_option( 'admin_email' ), sprintf( __( '[%s] New Affiliate Registration' ), $blogname ), $message );
+		}
 	}
 
 	/**

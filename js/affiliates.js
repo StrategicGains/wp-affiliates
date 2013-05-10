@@ -25,20 +25,25 @@ jQuery(document).ready(function(){
 	jQuery(".manage").corner("5px");
 	
 	/* effects & handling */
-	jQuery('.view-toggle').each( function() {
-		jQuery(this).click(function() {
-			var description = jQuery(this).children(".view");
-			var expander = jQuery(this).children(".expander");
-			if ( description.is(":hidden") ) {
-				description.slideDown("fast");
-				expander.contents().remove();
-				expander.append("[-] ");
-			} else {
-				description.slideUp("fast");
-				expander.contents().remove();
-				expander.append("[+] ");
-			}
-		});
+	var clickToggler = function() {
+		var description = jQuery(this).parent().children(".view");
+		var expander = jQuery(this).parent().children(".expander");
+		if ( description.is(":hidden") ) {
+			description.slideDown("fast");
+			expander.contents().remove();
+			expander.append("[-] ");
+		} else {
+			description.slideUp("fast");
+			expander.contents().remove();
+			expander.append("[+] ");
+		}
+	};
+	
+	jQuery('.view-toggle .expander').each( function() {
+		jQuery(this).click(clickToggler);
+	});
+	jQuery('.view-toggle .view-toggle-label').each( function() {
+		jQuery(this).click(clickToggler);
 	});
 
 });
